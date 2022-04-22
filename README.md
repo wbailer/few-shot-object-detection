@@ -2,6 +2,8 @@
 
 This is a fork of [Few-shot Object Detection (FsDet)](https://github.com/ucbdrive/few-shot-object-detection), adding an easy to use tool for training on custom datasets. The original FsDet readme with installation instructions can be found [here](README_fsdet.md).
 
+The ```semi-supervised''' branch contains experimental extensions to support soft-sampling in the losses of Faster R-CNN classification and mask branches, and an additional script (in ```tools''') to use predictions as complementary annotations (this includes an extensions of ```demo.py''' outputting annotions in COCO JSON format).
+
 ## Concept and Features
 
 We have extended the FsDet framework with a tool that dynamically generates datasets from annotation files and drives the training process. 
