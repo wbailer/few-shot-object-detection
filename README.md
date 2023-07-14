@@ -15,7 +15,7 @@ The tool has the following features:
 
 The tool currently supports annotations in COCO format. However, this does not mean that COCO is required as a base model, as long as the annotations are provided in this format. 
 
-A Docker container is provides, which contains a Torchserve server for inference, a Flask server providing endpoints to control the training process and a an Node.js instance running the MakeSense annotation tool.
+A Docker container is provided, which contains a Torchserve server for inference, a Flask server providing endpoints to control the training process and a an Node.js instance running the MakeSense annotation tool. The API and usage of the training and inference services is describe [here](docker/README.md).
 
 ## Files
 
