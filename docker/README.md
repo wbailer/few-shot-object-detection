@@ -41,7 +41,7 @@ The images ZIP file contains all the images referenced in the annotation file as
 
 ### Access logs
 
-The training script produces a log, with the name of the training job. The log can be accessed as (assuming the training job is called ```COCO_myclasses```)
+The training script produces a log, with the name of the training job. The log can be accessed as (assuming the training job is called ```COCO60_myclasses```)
 
 ```
 curl -v "http://localhost:3010/log?name=COCO60_myclasses"
