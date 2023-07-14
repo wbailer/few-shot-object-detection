@@ -53,4 +53,4 @@ docker build -t fsdet_ms .
 
 docker build -f Dockerfile.demo -t fsdet_ms:demo .
 
-#rm -r data_stage
+rm -r data_stage
