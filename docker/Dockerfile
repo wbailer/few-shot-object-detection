@@ -74,6 +74,9 @@ ENV TEMP=/home/model-server/tmp
 
 RUN python -m pip install flask flask-CORS
 
+# force setuptools back
+RUN python -m pip install setuptools==59.5.0
+
 COPY fsserver.py /workspace/few-shot-object-detection/fsserver.py
 COPY dockerd-entrypoint.sh /dockerd-entrypoint.sh
 RUN chmod +x /workspace/few-shot-object-detection/fsserver.py
@@ -82,6 +85,7 @@ RUN chmod +x /dockerd-entrypoint.sh
 ENV FSDET_ROOT=/workspace/few-shot-object-detection/
 ENV MODEL_STORE=/home/model-server/model-store/
 
+RUN apt-get update
 RUN apt-get -y install npm
 
 RUN cd /workspace && \ 
@@ -93,8 +97,9 @@ RUN cd /workspace && \
 RUN mkdir /workspace/few-shot-object-detection/datasets/cocosplit
 COPY data_stage/cocosplit/ /workspace/few-shot-object-detection/datasets/cocosplit
 
-COPY data_stage/configs/ /workspace/few-shot-object-detection/
-COPY data_stage/models/ /workspace/few-shot-object-detection/
+COPY data_stage/configs/ /workspace/few-shot-object-detection/configs
+RUN mkdir /workspace/few-shot-object-detection/models
+COPY data_stage/models/ /workspace/few-shot-object-detection/models
 
 # copy model store
 COPY model_store/* /home/model-server/model-store/
@@ -104,5 +109,5 @@ RUN mkdir /workspace/few-shot-object-detection/datasets/coco
 
 WORKDIR /
 
-CMD /bin/bash
-#CMD ./dockerd-entrypoint.sh
+#CMD /bin/bash
+CMD /dockerd-entrypoint.sh

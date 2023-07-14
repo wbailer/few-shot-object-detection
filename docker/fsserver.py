@@ -83,6 +83,7 @@ def training_worker(name,jobfilepath,basemodelfile):
     print("logging to "+get_log_path(name))
 
     sys.stdout = open(get_log_path(name), "w")
+    sys.stderr = sys.stdout
 
     args = SimpleNamespace(datasetconfig=jobfilepath , ignoreunknown=True, splitfact=-1)
 
@@ -107,8 +108,16 @@ def training_worker(name,jobfilepath,basemodelfile):
     
     newmodelname = newmodelname + modeldir + '/' + basename[-1]
         
-    # TODO add dependent configs
-    os.system("torch-model-archiver -f --model-name "+name+" --handler ./docker/fsod_handler.py --extra-files "+jobfilepath+ " --export-path "+model_store+" -v 0.1 --serialized-file "+newmodelname)
+    # build list of need config files
+    extrafilelist = [ jobfilepath,
+                      "./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml",
+                      "./data_stage/configs/Base-RCNN-FPN.yaml" ]
+                      
+    extrafilestr = ','.join(extrafilelist)
+        
+    # build archive
+    os.system("torch-model-archiver -f --model-name "+name+" --handler ./docker/fsod_handler.py --extra-files "+extrafilestr+ " --export-path "+model_store+" -v 0.1 --serialized-file "+newmodelname)
+    
     
     # register with torchserve
     # - unregister in case it already exists
