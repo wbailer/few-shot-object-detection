@@ -5,7 +5,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get -y install git && rm -rf /va
 
 RUN apt-get update -y
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev nano
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && apt-get -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev nano curl
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential checkinstall
 RUN DEBIAN_FRONTEND=noninteractive apt-get autoremove
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev ca-certificates 
@@ -56,7 +56,7 @@ WORKDIR /
 RUN python -m pip install --no-cache-dir captum torchtext torchserve torch-model-archiver nvgpu pyyaml pathlib
 RUN python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
 
-RUN python -m pip install termcolor numpy tqdm matplotlib termcolor yacs tabulate cloudpickle Pillow imagesize tensorboard opencv-python lvis 
+RUN python -m pip install termcolor numpy tqdm matplotlib termcolor yacs tabulate cloudpickle Pillow~=9.5 imagesize tensorboard opencv-python lvis 
 
 RUN mkdir -p /home/model-server/tmp
     

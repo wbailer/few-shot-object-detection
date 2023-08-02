@@ -4,6 +4,8 @@ import os
 import flask
 import zipfile
 import yaml
+import subprocess
+import shutil
 
 from PIL import Image
 from flask_cors import CORS
@@ -108,25 +110,32 @@ def training_worker(name,jobfilepath,basemodelfile):
     
     newmodelname = newmodelname + modeldir + '/' + basename[-1]
         
+    shutil.copyfile("./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml","./configs/custom_datasets/"+name+"_config.yml")
+        
     # build list of need config files
     extrafilelist = [ jobfilepath,
-                      "./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml",
+                      #"./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml",
+                      "./configs/custom_datasets/"+name+"_config.yml",
                       "./data_stage/configs/Base-RCNN-FPN.yaml" ]
                       
     extrafilestr = ','.join(extrafilelist)
         
     # build archive
-    os.system("torch-model-archiver -f --model-name "+name+" --handler ./docker/fsod_handler.py --extra-files "+extrafilestr+ " --export-path "+model_store+" -v 0.1 --serialized-file "+newmodelname)
-    
+    #print("torch-model-archiver -f --model-name "+name+" --handler ./docker/fsod_handler.py --extra-files "+extrafilestr+ " --export-path "+model_store+" -v 0.1 --serialized-file "+newmodelname)
+    #os.system("torch-model-archiver -f --model-name "+name+" --handler ./docker/fsod_handler.py --extra-files "+extrafilestr+ " --export-path "+model_store+" -v 0.1 --serialized-file "+newmodelname)
+    subprocess.run("torch-model-archiver -f --model-name "+name+" --handler ./docker/fsod_handler.py --extra-files "+extrafilestr+ " --export-path "+model_store+" -v 0.1 --serialized-file "+newmodelname,shell=True)
     
     # register with torchserve
     # - unregister in case it already exists
     
-    os.system("curl -X DELETE http://localhost:8081/models/"+name)
+    #os.system("curl -X DELETE http://localhost:8081/models/"+name)
+    subprocess.run("curl -X DELETE http://localhost:8081/models/",shell=True)
     
-    os.system("curl -X POST  \"http://localhost:8081/models?url="+model_store+"/"+name+".mar&name="+name+"\"")
+    #os.system("curl -X POST  \"http://localhost:8081/models?url="+model_store+"/"+name+".mar&name="+name+"\"")
+    subprocess.run("curl -X POST  \"http://localhost:8081/models?url="+model_store+"/"+name+".mar&name="+name+"\"&initial_workers=1",shell=True)
 
-    
+    subprocess.run("curl -X PUT  \"http://localhost:8081/models/"+name+"\"?min_worker=1",shell=True)
+   
 
 def main():
     app = flask.Flask(__name__)
