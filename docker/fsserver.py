@@ -109,14 +109,24 @@ def training_worker(name,jobfilepath,basemodelfile):
     modeldir = '_'.join(basename[-2].split('_')[:-1]) + '_' + name
     
     newmodelname = newmodelname + modeldir + '/' + basename[-1]
-        
-    shutil.copyfile("./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml","./configs/custom_datasets/"+name+"_config.yml")
+    
+    # write inference config
+    with open("./configs/custom_datasets/"+name+"_config.yml","w") as txtfile:
+        txtfile.write("threshold: 0.2\nfsdet_config: faster_rcnn_R_101_FPN_"+name+".yaml\n")
+
+    # make copy of config and adjust relative path
+    shutil.copyfile("./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml","./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml")
+    
+    subprocess.run("sed -i 's/_BASE_: \"\.\.\//_BASE_: \"/g' ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
+    subprocess.run("sed -i 's/WEIGHTS: \".*\.pth\"/WEIGHTS: \"model_final.pth\"/g' ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
+    subprocess.run("sed -i s/\'/\"/g ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
+    
         
     # build list of need config files
     extrafilelist = [ jobfilepath,
-                      #"./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml",
+                      "./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",
                       "./configs/custom_datasets/"+name+"_config.yml",
-                      "./data_stage/configs/Base-RCNN-FPN.yaml" ]
+                      "/workspace/few-shot-object-detection/configs/Base-RCNN-FPN.yaml" ]
                       
     extrafilestr = ','.join(extrafilelist)
         
@@ -129,12 +139,13 @@ def training_worker(name,jobfilepath,basemodelfile):
     # - unregister in case it already exists
     
     #os.system("curl -X DELETE http://localhost:8081/models/"+name)
-    subprocess.run("curl -X DELETE http://localhost:8081/models/",shell=True)
+    subprocess.run("curl -X DELETE http://localhost:8081/models/"+name,shell=True)
     
     #os.system("curl -X POST  \"http://localhost:8081/models?url="+model_store+"/"+name+".mar&name="+name+"\"")
-    subprocess.run("curl -X POST  \"http://localhost:8081/models?url="+model_store+"/"+name+".mar&name="+name+"\"&initial_workers=1",shell=True)
+    subprocess.run("curl -X POST  \"http://localhost:8081/models?url="+model_store+"/"+name+".mar&name="+name+"&initial_workers=1\"",shell=True)
 
-    subprocess.run("curl -X PUT  \"http://localhost:8081/models/"+name+"\"?min_worker=1",shell=True)
+    subprocess.run("curl -X PUT  \"http://localhost:8081/models/"+name+"?min_worker=1\"",shell=True)
+ 
    
 
 def main():
