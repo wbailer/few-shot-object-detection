@@ -598,12 +598,18 @@ def register_meta_custom(name, metadata, imgdir, annofile, dsname):
         lambda: load_custom_json(annofile, imgdir, metadata, name, dsname ),
     )
 
+    print("DBG registering "+name)
+
     if "_base" in name or "_novel" in name:
         split = "base" if "_base" in name else "novel"
         metadata["thing_dataset_id_to_contiguous_id"] = metadata[
             "{}_dataset_id_to_contiguous_id".format(split)
         ]
         metadata["thing_classes"] = metadata["{}_classes".format(split)]
+    if "_all" in name:
+        print("DBG in all branch")
+        metadata["thing_dataset_id_to_contiguous_id"] = metadata["base_dataset_id_to_contiguous_id"] + metadata["novel_dataset_id_to_contiguous_id"]
+        metadata["thing_classes"] = metadata["base_classes"] + metadata["novel_classes"]
        
 
     MetadataCatalog.get(name).set(
