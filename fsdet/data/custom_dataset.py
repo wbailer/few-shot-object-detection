@@ -609,7 +609,10 @@ def register_meta_custom(name, metadata, imgdir, annofile, dsname):
     if "_all" in name:
     
         metadata["thing_dataset_id_to_contiguous_id"] = copy.copy(metadata["base_dataset_id_to_contiguous_id"])
-        metadata["thing_dataset_id_to_contiguous_id"].update(metadata["novel_dataset_id_to_contiguous_id"])
+        nbasecl = len(metadata["thing_dataset_id_to_contiguous_id"])
+        for ncid in metadata["novel_dataset_id_to_contiguous_id"]:
+            metadata["thing_dataset_id_to_contiguous_id"][ncid] = metadata["novel_dataset_id_to_contiguous_id"][ncid] + nbasecl
+
         metadata["thing_classes"] = metadata["base_classes"] + metadata["novel_classes"]
         
         print("cls ids")

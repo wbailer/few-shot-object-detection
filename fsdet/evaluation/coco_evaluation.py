@@ -165,6 +165,11 @@ class COCOEvaluator(DatasetEvaluator):
             reverse_id_mapping = {
                 v: k for k, v in self._metadata.thing_dataset_id_to_contiguous_id.items()
             }
+            
+            print(reverse_id_mapping)
+            
+            self._logger.info(reverse_id_mapping)
+            
             for result in self._coco_results:
                 result["category_id"] = reverse_id_mapping[result["category_id"]]
 
