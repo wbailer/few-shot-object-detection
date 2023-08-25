@@ -611,6 +611,9 @@ def register_meta_custom(name, metadata, imgdir, annofile, dsname):
         metadata["thing_dataset_id_to_contiguous_id"] = copy.copy(metadata["base_dataset_id_to_contiguous_id"])
         metadata["thing_dataset_id_to_contiguous_id"].update(metadata["novel_dataset_id_to_contiguous_id"])
         metadata["thing_classes"] = metadata["base_classes"] + metadata["novel_classes"]
+        
+        print("cls ids")
+        print(metadata["thing_dataset_id_to_contiguous_id"])
        
 
     MetadataCatalog.get(name).set(
