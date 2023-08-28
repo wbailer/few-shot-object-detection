@@ -608,6 +608,8 @@ def register_meta_custom(name, metadata, imgdir, annofile, dsname):
         metadata["thing_classes"] = metadata["{}_classes".format(split)]
     if "_all" in name:
     
+        print("ds name "+name)
+    
         metadata["thing_dataset_id_to_contiguous_id"] = copy.copy(metadata["base_dataset_id_to_contiguous_id"])
         nbasecl = len(metadata["thing_dataset_id_to_contiguous_id"])
         for ncid in metadata["novel_dataset_id_to_contiguous_id"]:

@@ -91,6 +91,8 @@ class COCOEvaluator(DatasetEvaluator):
         if not(novelclasslist is None):
             self._novel_classes = novelclasslist
 
+        print("cce: dataset name: "+self.dataset_name)
+        print(self._metadata.keys())
         
 
         json_file = PathManager.get_local_path(self._metadata.json_file)
