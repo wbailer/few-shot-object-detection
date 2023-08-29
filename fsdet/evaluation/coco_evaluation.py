@@ -91,7 +91,7 @@ class COCOEvaluator(DatasetEvaluator):
         if not(novelclasslist is None):
             self._novel_classes = novelclasslist
 
-        print("cce: dataset name: "+self.dataset_name)
+        print("cce: dataset name: "+dataset_name)
         print(self._metadata.keys())
         
 
