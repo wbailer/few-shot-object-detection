@@ -92,7 +92,7 @@ class COCOEvaluator(DatasetEvaluator):
             self._novel_classes = novelclasslist
 
         print("cce: dataset name: "+dataset_name)
-        print(self._metadata.keys())
+        print(self._metadata)
         
 
         json_file = PathManager.get_local_path(self._metadata.json_file)
