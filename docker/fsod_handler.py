@@ -36,6 +36,9 @@ import io
 from detectron2.data.detection_utils import read_image, convert_PIL_to_numpy
 
 
+logger = logging.getLogger(__name__)
+
+
 class FSObjectDetector(ObjectDetector):
 
     image_processing = transforms.Compose([
@@ -174,12 +177,18 @@ class FSObjectDetector(ObjectDetector):
         return predictions
         
     def postprocess(self,data):
+        logger.info("in inference")
+    
         result = []
                
         instances = data['instances']
 
+
+        logger.info(self.cfg.DATASETS.TEST[0])
         
         metadata = MetadataCatalog.get(self.cfg.DATASETS.TEST[0])
+
+        logger.info(metadata)
 
         labels = metadata.thing_classes
         
