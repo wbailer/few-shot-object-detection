@@ -91,8 +91,6 @@ class COCOEvaluator(DatasetEvaluator):
         if not(novelclasslist is None):
             self._novel_classes = novelclasslist
 
-        print("cce: dataset name: "+dataset_name)
-        print(self._metadata)
         
 
         json_file = PathManager.get_local_path(self._metadata.json_file)
@@ -168,7 +166,6 @@ class COCOEvaluator(DatasetEvaluator):
                 v: k for k, v in self._metadata.thing_dataset_id_to_contiguous_id.items()
             }
             
-            print(reverse_id_mapping)
             
             self._logger.info(reverse_id_mapping)
             
@@ -274,8 +271,6 @@ class COCOEvaluator(DatasetEvaluator):
         precisions = coco_eval.eval["precision"]
         # precision has dims (iou, recall, cls, area range, max dets)
         
-        print("len class names "+str(len(class_names)))
-        print("len prec shape "+str(precisions.shape[2]))
         
         assert len(class_names) == precisions.shape[2]
 

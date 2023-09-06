@@ -116,13 +116,21 @@ class FSObjectDetector(ObjectDetector):
 
 
         if not (self.args.custom_dataset == None):
+            logger.info("registering custom datasets")
             custom_dataset.register_all_custom(self.args.custom_dataset,"datasets")  
          
         self.cfg = self.setup_cfg(self.args)
+        
+        logger.info("dataset name " +  self.cfg.DATASETS.TEST[0] )
 
         self.metadata = MetadataCatalog.get(
             self.cfg.DATASETS.TEST[0] if len(self.cfg.DATASETS.TEST) else "__unused"
         )
+        
+        logger.info(self.metadata)
+        
+        logger.info("----")
+        
         self.cpu_device = torch.device("cpu")
 
         self.parallel = False
@@ -177,7 +185,7 @@ class FSObjectDetector(ObjectDetector):
         return predictions
         
     def postprocess(self,data):
-        logger.info("in inference")
+        logger.info("in postprocess")
     
         result = []
                
@@ -186,11 +194,10 @@ class FSObjectDetector(ObjectDetector):
 
         logger.info(self.cfg.DATASETS.TEST[0])
         
-        metadata = MetadataCatalog.get(self.cfg.DATASETS.TEST[0])
 
-        logger.info(metadata)
+        logger.info(self.metadata)
 
-        labels = metadata.thing_classes
+        labels = self.metadata.thing_classes
         
         confident_detections = instances[instances.scores > self.threshold]
 
