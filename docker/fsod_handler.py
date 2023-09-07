@@ -79,6 +79,9 @@ class FSObjectDetector(ObjectDetector):
 
     def initialize(self, context):
     
+        logger.info("initialise fsod_handler")
+    
+    
         properties = context.system_properties
         
         
@@ -122,15 +125,19 @@ class FSObjectDetector(ObjectDetector):
         self.cfg = self.setup_cfg(self.args)
         
         logger.info("dataset name " +  self.cfg.DATASETS.TEST[0] )
+        print("dataset name " +  self.cfg.DATASETS.TEST[0] )
+
 
         self.metadata = MetadataCatalog.get(
             self.cfg.DATASETS.TEST[0] if len(self.cfg.DATASETS.TEST) else "__unused"
         )
         
         logger.info(self.metadata)
+        print(self.metadata)
         
         logger.info("----")
-        
+        print("----")
+       
         self.cpu_device = torch.device("cpu")
 
         self.parallel = False
