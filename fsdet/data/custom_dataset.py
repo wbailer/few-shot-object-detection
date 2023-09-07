@@ -414,7 +414,7 @@ def rand_bin_array(K, N):
 
 # for builtin and custom meta
 
-def register_all_custom(cfgfilename,root="datasets"):
+def register_all_custom(cfgfilename,root="datasets",force=False):
     #cfgfilename = os.path.join('configs','custom_datasets','coco_lvis1.yaml')
 
     cds = CustomDataset()
@@ -469,7 +469,8 @@ def register_all_custom(cfgfilename,root="datasets"):
             _get_custom_builtin_metadata(cds.get_name() + "_fewshot",cds),
             os.path.join(root, imgdir),
             os.path.join(root, annofile),
-            cds.get_name()
+            cds.get_name(),
+            force
         )
         
 
@@ -584,12 +585,13 @@ def load_custom_json(json_file, image_root, metadata, dataset_name, dsname):
     return dataset_dicts
 
 
-def register_meta_custom(name, metadata, imgdir, annofile, dsname):
+def register_meta_custom(name, metadata, imgdir, annofile, dsname, force=False):
 
     try:
         DatasetCatalog.get(name)
         # if dataset is found, return
-        return
+        if not(force):
+            return
     except KeyError as e:
         found = False
 
