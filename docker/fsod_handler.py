@@ -140,7 +140,7 @@ class FSObjectDetector(ObjectDetector):
         
         log2 = open('/home/model-server/fsod.log','w')
         log2.write("dataset name " +  self.cfg.DATASETS.TEST[0])
-        log2.write(self.metadata)
+        log2.write(str(self.metadata))
         log2.close()
        
         self.cpu_device = torch.device("cpu")
