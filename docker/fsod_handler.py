@@ -117,6 +117,9 @@ class FSObjectDetector(ObjectDetector):
         if "custom_dataset" in conf.keys():
             self.args.custom_dataset = conf["custom_dataset"]
 
+        log2 = open('/home/model-server/fsod.log','w')
+        log2.write("custom datast "+self.args.custom_dataset+"\n")
+        log2.close()
 
         if not (self.args.custom_dataset == None):
             logger.info("registering custom datasets")
@@ -138,9 +141,9 @@ class FSObjectDetector(ObjectDetector):
         logger.info("----")
         print("----")
         
-        log2 = open('/home/model-server/fsod.log','w')
-        log2.write("dataset name " +  self.cfg.DATASETS.TEST[0])
-        log2.write(str(self.metadata))
+        log2 = open('/home/model-server/fsod.log','a')
+        log2.write("dataset name " +  self.cfg.DATASETS.TEST[0]+"\n")
+        log2.write(str(self.metadata)+"\n")
         log2.close()
        
         self.cpu_device = torch.device("cpu")

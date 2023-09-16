@@ -587,6 +587,11 @@ def load_custom_json(json_file, image_root, metadata, dataset_name, dsname):
 
 def register_meta_custom(name, metadata, imgdir, annofile, dsname, force=False):
 
+    log2 = open('/home/model-server/fsod.log','a')
+    log2.write("register custom "+name+"\n")
+    log2.write("force reg "+str(force)+"\n")
+    log2.close()
+
     try:
         DatasetCatalog.get(name)
         # if dataset is found, return
@@ -618,7 +623,10 @@ def register_meta_custom(name, metadata, imgdir, annofile, dsname, force=False):
 
         metadata["thing_classes"] = metadata["base_classes"] + metadata["novel_classes"]
         
-        
+    log2 = open('/home/model-server/fsod.log','a')
+    log2.write("registered dataset\n")
+    log2.write(str(metadata))
+    log2.close()        
 
     MetadataCatalog.get(name).set(
         json_file=annofile,
