@@ -123,7 +123,7 @@ class FSObjectDetector(ObjectDetector):
 
         if not (self.args.custom_dataset == None):
             logger.info("registering custom datasets")
-            custom_dataset.register_all_custom(self.args.custom_dataset+".yaml","datasets",force=True)  
+            custom_dataset.register_all_custom(self.args.custom_dataset+"_.yaml","datasets",force=True)  
          
         self.cfg = self.setup_cfg(self.args)
         
