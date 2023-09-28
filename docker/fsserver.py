@@ -112,21 +112,38 @@ def training_worker(name,jobfilepath,basemodelfile):
     
     # write inference config
     with open("./configs/custom_datasets/"+name+"_config.yml","w") as txtfile:
-        txtfile.write("threshold: 0.2\nfsdet_config: faster_rcnn_R_101_FPN_"+name+".yaml\n")
+        txtfile.write("threshold: 0.2\nfsdet_config: faster_rcnn_R_101_FPN_"+name+".yaml\ncustom_dataset: "+name+"\n")
 
     # make copy of config and adjust relative path
     shutil.copyfile("./configs/custom_datasets/faster_rcnn_R_101_FPN_ft_all_fshot_"+name+".yaml","./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml")
-    
+       
     subprocess.run("sed -i 's/_BASE_: \"\.\.\//_BASE_: \"/g' ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
     subprocess.run("sed -i 's/WEIGHTS: \".*\.pth\"/WEIGHTS: \"model_final.pth\"/g' ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
     subprocess.run("sed -i s/\'/\"/g ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
-    
+
+    # make copy of config and adjust relative path
+    shutil.copyfile(jobfilepath,"./configs/custom_datasets/"+name+".yaml")       
+    subprocess.run("sed -i 's/  trainval: \".*\.json\"/trainval: \"base_annotations.json\"/g' ./configs/custom_datasets/"+name+".yaml",shell=True)
+    subprocess.run("sed -i 's/  data: \".*\.json\"/data: \"novel_annotations.json\"/g' ./configs/custom_datasets/"+name+".yaml",shell=True)
+
+    # extract dataset JSON filenames
+    with open(filename, 'r') as stream:
+        datasetinfo = yaml.safe_load(stream)
+        basedsname = datasetinfo['base']['trainval']
+        shutil.copyfile(basedsname,"./configs/custom_datasets/base_annotations.json")       
+        noveldsname = datasetinfo['novel']['data']
+        shutil.copyfile(noveldsname,"./configs/custom_datasets/novel_annotations.json")       
+        
         
     # build list of need config files
     extrafilelist = [ jobfilepath,
                       "./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",
                       "./configs/custom_datasets/"+name+"_config.yml",
-                      "/workspace/few-shot-object-detection/configs/Base-RCNN-FPN.yaml" ]
+                      "/workspace/few-shot-object-detection/configs/Base-RCNN-FPN.yaml",
+                      "./configs/custom_datasets/"+name+".yaml",
+                      "./configs/custom_datasets/base_annotations.json",
+                      "./configs/custom_datasets/novel_annotations.json"
+                       ]
                       
     extrafilestr = ','.join(extrafilelist)
         
