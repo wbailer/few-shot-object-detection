@@ -121,26 +121,30 @@ def training_worker(name,jobfilepath,basemodelfile):
     subprocess.run("sed -i 's/WEIGHTS: \".*\.pth\"/WEIGHTS: \"model_final.pth\"/g' ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
     subprocess.run("sed -i s/\'/\"/g ./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",shell=True)
 
-    # make copy of config and adjust relative path
-    shutil.copyfile(jobfilepath,"./configs/custom_datasets/"+name+".yaml")       
-    subprocess.run("sed -i 's/  trainval: \".*\.json\"/trainval: \"base_annotations.json\"/g' ./configs/custom_datasets/"+name+".yaml",shell=True)
-    subprocess.run("sed -i 's/  data: \".*\.json\"/data: \"novel_annotations.json\"/g' ./configs/custom_datasets/"+name+".yaml",shell=True)
+    # make copy of config 
+    shutil.copyfile(jobfilepath,"./configs/custom_datasets/"+name+"_.yaml")       
 
-    # extract dataset JSON filenames
-    with open(filename, 'r') as stream:
+    # extract dataset JSON filenames, and fix paths
+    datasetinfo = None
+    with open(jobfilepath, 'r') as stream:
         datasetinfo = yaml.safe_load(stream)
         basedsname = datasetinfo['base']['trainval']
         shutil.copyfile(basedsname,"./configs/custom_datasets/base_annotations.json")       
         noveldsname = datasetinfo['novel']['data']
-        shutil.copyfile(noveldsname,"./configs/custom_datasets/novel_annotations.json")       
+        shutil.copyfile(noveldsname,"./configs/custom_datasets/novel_annotations.json")   
         
+        datasetinfo['base']['trainval'] = "base_annotations.json"
+        datasetinfo['novel']['data'] = "novel_annotations.json"
+   
+    with open("./configs/custom_datasets/"+name+"_config.yml", 'w') as stream:
+        yaml.dump(datasetinfo,stream)
+     
         
     # build list of need config files
-    extrafilelist = [ jobfilepath,
-                      "./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",
+    extrafilelist = [ "./configs/custom_datasets/faster_rcnn_R_101_FPN_"+name+".yaml",
                       "./configs/custom_datasets/"+name+"_config.yml",
                       "/workspace/few-shot-object-detection/configs/Base-RCNN-FPN.yaml",
-                      "./configs/custom_datasets/"+name+".yaml",
+                      "./configs/custom_datasets/"+name+"_.yaml",
                       "./configs/custom_datasets/base_annotations.json",
                       "./configs/custom_datasets/novel_annotations.json"
                        ]

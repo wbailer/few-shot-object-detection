@@ -1,0 +1,51 @@
+<html>
+<header>
+<title>FSOD Service Demo</title>
+</header>
+
+<body>
+<h1>FSOD Service Demo</h1>
+
+
+<h2>Select training data</h2>
+
+<form action="/train" method="post" enctype="multipart/form-data">
+  Config files (ZIP): <input type="file" name="config"><br>
+  Images (ZIP): <input type="file" name="images"><br>
+  <input type="submit" value="Train">
+</form>
+
+<h2>Check logs</h2>
+
+
+<form action="/log" method="get" enctype="multipart/form-data">
+  Name of tasks: <input type="text" name="name" value="COCO60_tm2a"><br>
+  Number of tail lines: <input type="text" name="tail" value="100"><br>
+
+  <input type="submit" value="Get log">
+
+</form>
+
+<h3>Last logs</h3>
+<div id="logarea">
+
+<h2>Test service</h2>
+
+Note: check in the logs that the training task has been completed without errors.
+
+<form action="/log" method="get" enctype="multipart/form-data">
+  Name of model: <input type="text" name="name" value="COCO60_tm2a"><br>
+  Test image: <input type="file" name="src"><br>
+<br>
+
+  <input type="submit" value="Get log">
+
+</form>
+
+<h3>Detection result</h3>
+<div id="detresult">
+
+
+</body>
+
+</html>
