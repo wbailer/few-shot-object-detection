@@ -136,7 +136,7 @@ def training_worker(name,jobfilepath,basemodelfile):
         datasetinfo['base']['trainval'] = "base_annotations.json"
         datasetinfo['novel']['data'] = "novel_annotations.json"
    
-    with open("./configs/custom_datasets/"+name+"_config.yml", 'w') as stream:
+    with open("./configs/custom_datasets/"+name+"_.yaml", 'w') as stream:
         yaml.dump(datasetinfo,stream)
      
         
