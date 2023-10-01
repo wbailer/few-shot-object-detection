@@ -135,6 +135,10 @@ def training_worker(name,jobfilepath,basemodelfile):
         
         datasetinfo['base']['trainval'] = "base_annotations.json"
         datasetinfo['novel']['data'] = "novel_annotations.json"
+        if 'trainval' in datasetinfo['novel'].keys():
+            del datasetinfo['novel']['trainval']
+        if 'test' in datasetinfo['novel'].keys():
+            del datasetinfo['novel']['test']
    
     with open("./configs/custom_datasets/"+name+"_.yaml", 'w') as stream:
         yaml.dump(datasetinfo,stream)
