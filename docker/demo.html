@@ -1,6 +1,144 @@
 <html>
 <header>
 <title>FSOD Service Demo</title>
+
+<script>
+function submitTrain(e) {
+  e.preventDefault();
+
+  var myform = document.getElementById("trainmodel");
+
+  var formData = new FormData(myform);
+
+  fetch("/train", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        let respdiv = document.getElementById("trainstatus");
+        respdiv.innerHTML = "<p class='error'>error starting training</p>";
+        throw new Error("network returns error");
+      }
+      return response;
+    })
+    .then((resp) => {
+      let respdiv = document.getElementById("trainstatus");
+      respdiv.innerHTML = "<p class='success'>training started</p>";
+      console.log("resp from server ", resp);
+    })
+    .catch((error) => {
+      // Handle error
+      console.log("error ", error);
+    });
+}
+
+function submitLog(e) {
+  e.preventDefault();
+
+  var myform = document.getElementById("getlog");
+
+  var formData = new FormData(myform);
+
+  fetch("/log?"+ new URLSearchParams({
+    name: document.getElementById('logname').value,
+    tail: document.getElementById('logtail').value
+    }), {
+      method: "GET",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        let respdiv = document.getElementById("logarea");
+        respdiv.innerHTML = "<p class='error'>error retrieving logs</p>";
+        throw new Error("network returns error");
+      }
+      return response.text();
+    })
+    .then((resp) => {
+      let respdiv = document.getElementById("logarea");
+      respdiv.innerHTML = "<div class='logbox'><code class='log'>"+resp+"</code></div>";
+      console.log("resp from server ", resp);
+    })
+    .catch((error) => {
+      // Handle error
+      console.log("error ", error);
+    });
+}
+
+
+function upload(file,target){
+  fetch(target, { 
+    method: 'POST',
+    headers: {
+     },
+    body: file // file object
+  }).then(
+    response => response.text() // if the response is a JSON object
+  ).then(
+    result => {
+       console.log(result);
+       let testres = document.getElementById("detresult");
+       testres.innerHTML = "<div class='logbox'><code class='log'>"+result+"</code></div>";
+   
+    }
+  ).catch(
+    error => console.log(error) // Handle the error response object
+  );
+}
+
+function submitInference(e) {
+  e.preventDefault();
+
+  const input = document.getElementById('testfile');
+
+  let modelname = document.getElementById("testmodel").value;
+  let hostname = window.location.hostname;
+
+  upload(input.files[0],'http://'+hostname+':8080/predictions/'+modelname)
+ 
+  let testimg = document.getElementById("testimage");
+  testimgurl = URL.createObjectURL(input.files[0]);
+  testimg.innerHTML = "<img src='"+testimgurl+"' width='500px'></img>";
+
+
+}
+
+
+
+window.onload = function() {
+
+    var tform = document.getElementById("trainmodel");
+    tform.addEventListener("submit", submitTrain);
+
+    var lform = document.getElementById("getlog");
+    lform.addEventListener("submit", submitLog);
+
+    var iform = document.getElementById("inference");
+    iform.addEventListener("submit", submitInference);
+
+
+}
+
+</script>
+<style>
+.log {
+   white-space: pre;
+   font-family: monospace;
+} 
+
+.logbox {
+   background-color: lightgray;
+}
+
+.error {
+   color: red;
+}
+
+.success {
+   color: green;
+}
+</style>
+
 </header>
 
 <body>
@@ -9,18 +147,21 @@
 
 <h2>Select training data</h2>
 
-<form action="/train" method="post" enctype="multipart/form-data">
+<form id="trainmodel" method="post" enctype="multipart/form-data">
   Config files (ZIP): <input type="file" name="config"><br>
   Images (ZIP): <input type="file" name="images"><br>
   <input type="submit" value="Train">
 </form>
 
+<div id="trainstatus">
+</div>
+
 <h2>Check logs</h2>
 
 
-<form action="/log" method="get" enctype="multipart/form-data">
-  Name of tasks: <input type="text" name="name" value="COCO60_tm2a"><br>
-  Number of tail lines: <input type="text" name="tail" value="100"><br>
+<form id="getlog" method="get" enctype="multipart/form-data">
+  Name of tasks: <input type="text" name="name" id="logname" value="COCO60_tm2a"><br>
+  Number of tail lines: <input type="text" name="tail" id="logtail" value="100"><br>
 
   <input type="submit" value="Get log">
 
@@ -28,24 +169,29 @@
 
 <h3>Last logs</h3>
 <div id="logarea">
+</div>
 
 <h2>Test service</h2>
 
-Note: check in the logs that the training task has been completed without errors.
+Note: check in the logs that the training and deployment has been completed without errors.
 
-<form action="/log" method="get" enctype="multipart/form-data">
-  Name of model: <input type="text" name="name" value="COCO60_tm2a"><br>
-  Test image: <input type="file" name="src"><br>
+<form id="inference" method="get" enctype="multipart/form-data">
+  Name of model: <input type="text" name="name" id="testmodel" value="COCO60_tm2a"><br>
+  Test image: <input type="file" id="testfile" name="src"><br>
 <br>
 
-  <input type="submit" value="Get log">
+ <input type="submit" value="Test">
 
 </form>
 
 <h3>Detection result</h3>
+<div id="testimage">
+</div>
 <div id="detresult">
+</div>
 
 
 </body>
 
 </html>
+

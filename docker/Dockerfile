@@ -78,6 +78,7 @@ RUN python -m pip install flask flask-CORS
 RUN python -m pip install setuptools==59.5.0
 
 COPY fsserver.py /workspace/few-shot-object-detection/fsserver.py
+COPY demo.html /workspace/few-shot-object-detection/demo.html
 COPY dockerd-entrypoint.sh /dockerd-entrypoint.sh
 RUN chmod +x /workspace/few-shot-object-detection/fsserver.py
 RUN chmod +x /dockerd-entrypoint.sh

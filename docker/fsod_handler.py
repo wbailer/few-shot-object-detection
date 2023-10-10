@@ -31,6 +31,7 @@ import yaml
 from pathlib import Path
 from PIL import Image
 import io
+import base64
 
 
 from detectron2.data.detection_utils import read_image, convert_PIL_to_numpy
@@ -152,6 +153,8 @@ class FSObjectDetector(ObjectDetector):
             # directly, but older versions of Torchserve didn't have envelope.
             image = row.get("data") or row.get("body")
             if isinstance(image, str):
+                print(image)
+                        
                 # if the image is a string of bytesarray.
                 image = base64.b64decode(image)
 
