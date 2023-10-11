@@ -250,6 +250,22 @@ def main():
         except Exception as e:
             return flask.Response(response='Failed to parse ZIP file: '+str(e), status=500)
 
+        # check if ensemble learning option is set
+
+        
+        ensemble_learning = False
+        ensemble_nr_comp = 0
+        
+        if 'ensemblecomp' in flask.request.form.keys():
+            try:
+                ensemble_nr_comp = int(flask.request.form['ensemblecomp'])
+                if ensemble_nr_comp>0:
+                    ensemble_learning = True
+                
+            except Exception as e:
+                print('WARNING: failed to get ensemble learning parameters - proceeding without')
+            
+            
             
         # process config files
         jsoncontent = '{}'

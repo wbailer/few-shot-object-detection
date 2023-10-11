@@ -103,7 +103,19 @@ function submitInference(e) {
 
 }
 
+function ensembleCheckbox(cb) {
+    if (cb.checked) {
+        var nrcomp = document.getElementById("nrcomp");
+        nrcomp.innerHTML=' with <input type="text" name="ensemblecomp" id="ensemblecomp" value="2" size="4"> components';
 
+
+    }
+    else {
+        var nrcomp = document.getElementById("nrcomp");
+        nrcomp.innerHTML='';
+
+    }
+}
 
 window.onload = function() {
 
@@ -150,6 +162,7 @@ window.onload = function() {
 <form id="trainmodel" method="post" enctype="multipart/form-data">
   Config files (ZIP): <input type="file" name="config"><br>
   Images (ZIP): <input type="file" name="images"><br>
+  <input type="checkbox" onclick="ensembleCheckbox(this)">&nbsp;Use ensemble learning <subform id="nrcomp"></subform><br>
   <input type="submit" value="Train">
 </form>
 
@@ -194,4 +207,5 @@ Note: check in the logs that the training and deployment has been completed with
 </body>
 
 </html>
+
 
