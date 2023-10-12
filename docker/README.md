@@ -68,6 +68,12 @@ curl http://localhost:8080/predictions/fsod_base_coco80 -T ~/my_sample_image.jpg
 
 Model created during the few-shot training process and deployed to TorchServe can be called in a similar way.
 
+In order to avoid CORS issues (independent of where the container is deployed), there is a ```/test``` endpoint provided with the training service, which forwards requests to TorchServe. The request above can thus also be made to:
+
+```
+curl http://localhost:3010/test/fsod_base_coco80 -T ~/my_sample_image.jpg 
+```
+
 ## Demo web page
 
 A demo web page (demo.html) for uploading files and testing the training, logging and inference web points is provided.
