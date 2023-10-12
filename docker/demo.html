@@ -93,8 +93,10 @@ function submitInference(e) {
 
   let modelname = document.getElementById("testmodel").value;
   let hostname = window.location.hostname;
+  let port = window.location.port;
 
-  upload(input.files[0],'http://'+hostname+':8080/predictions/'+modelname)
+  //upload(input.files[0],'http://'+hostname+':8080/predictions/'+modelname)
+  upload(input.files[0],'http://'+hostname+':'+port+'/test/'+modelname)
  
   let testimg = document.getElementById("testimage");
   testimgurl = URL.createObjectURL(input.files[0]);

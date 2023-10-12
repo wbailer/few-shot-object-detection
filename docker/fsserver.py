@@ -6,6 +6,7 @@ import zipfile
 import yaml
 import subprocess
 import shutil
+import requests
 
 from PIL import Image
 from flask_cors import CORS
@@ -369,6 +370,30 @@ def main():
             return open(src).read()
         except IOError as exc:
             return str(exc)
+
+
+    @app.route('/test/<modelname>', methods=['POST'])   
+    def test(modelname): 
+    
+        res = requests.request(  # ref. https://stackoverflow.com/a/36601467/248616
+            method          = flask.request.method,
+            url             = 'http://localhost:8080/predictions/'+modelname,
+            headers         = {k:v for k,v in flask.request.headers if k.lower() != 'host'}, # exclude 'host' header
+            data            = flask.request.get_data(),
+            cookies         = flask.request.cookies,
+            allow_redirects = False,
+        ) 
+    
+        excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']  #NOTE we here exclude all "hop-by-hop headers" defined by RFC 2616 section 13.5.1 ref. https://www.rfc-editor.org/rfc/rfc2616#section-13.5.1
+        headers          = [
+            (k,v) for k,v in res.raw.headers.items()
+            if k.lower() not in excluded_headers
+        ] 
+        
+          
+        response = flask.Response(res.content, res.status_code, headers)
+        return response
+        
 
 
     @app.route('/', methods=['GET'], defaults={'path': ''} )
