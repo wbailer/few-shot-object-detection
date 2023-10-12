@@ -68,6 +68,10 @@ curl http://localhost:8080/predictions/fsod_base_coco80 -T ~/my_sample_image.jpg
 
 Model created during the few-shot training process and deployed to TorchServe can be called in a similar way.
 
+## Demo web page
+
+A demo web page (demo.html) for uploading files and testing the training, logging and inference web points is provided.
+
 ### Acknowledgement
 
 This work has received funding from the European Union’s Horizon 2020 Research and Innovation Programme under grant agreement No 951911 ([AI4Media](https://www.ai4media.eu/)).
